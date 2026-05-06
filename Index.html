@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palak Singh – Catch Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #0D0608;
+    --cream-2: #180A0D;
+    --cream-3: #221013;
+    --ink: #F5ECEA;
+    --ink-2: #D4B8BC;
+    --ink-3: #9A7880;
+    --rose: #CC2233;
+    --rose-dark: #8B0000;
+    --rose-light: rgba(204,34,51,0.18);
+    --rose-glow: rgba(204,34,51,0.35);
+    --gold: #C8892A;
+    --gold-light: rgba(200,137,42,0.15);
+    --sage: #7A4A50;
+    --lavender: #8B4055;
+    --border: rgba(255,200,200,0.08);
+    --border-strong: rgba(255,180,180,0.14);
+    --sidebar-w: 320px;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND ── */
+  .bg-layer {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 65% at 0% 0%, rgba(139,0,0,0.35) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 55% at 100% 100%, rgba(180,0,20,0.25) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 45% at 55% 40%, rgba(100,0,15,0.2) 0%, transparent 65%),
+      #0D0608;
+  }
+  .bg-layer::after {
+    content:''; position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg,transparent,transparent 79px,rgba(255,100,100,0.025) 80px),
+      repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,100,100,0.025) 80px);
+  }
+
+  /* ════════════════════════════════
+     ANNOUNCEMENT
+  ════════════════════════════════ */
+  .announcement {
+    position: relative; z-index: 20;
+    background: linear-gradient(135deg, #8B0000, #5C0010);
+    color: #FFD0D0; text-align: center;
+    padding: 10px 20px; font-size: 12px; font-weight: 500; letter-spacing: 0.5px;
+    animation: fadeDown 0.6s ease both;
+  }
+  .announcement strong { font-weight: 700; }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ════════════════════════════════
+     TOP NAV (desktop only)
+  ════════════════════════════════ */
+  .top-nav {
+    position: sticky; top: 0; z-index: 15;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 40px;
+    background: rgba(13,6,8,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(204,34,51,0.2);
+  }
+  .top-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600; letter-spacing: 0.5px; color: var(--ink);
+    text-decoration: none;
+  }
+  .top-logo em { color: var(--rose); font-style: italic; }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-link {
+    font-size: 13px; color: var(--ink-3); font-weight: 500; text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-link:hover { color: var(--rose); }
+  .signin-btn {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 20px; border-radius: 100px;
+    background: linear-gradient(135deg, var(--rose), var(--rose-dark)); border: 1px solid var(--rose-dark);
+    color: #fff; font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 500;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+  .signin-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 4px 20px var(--rose-glow); }
+  .signin-btn svg { width: 12px; height: 12px; stroke: rgba(255,255,255,0.85); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* ════════════════════════════════
+     PAGE LAYOUT
+  ════════════════════════════════ */
+  .page-layout {
+    position: relative; z-index: 2;
+    display: flex; gap: 0;
+    max-width: 1200px; margin: 0 auto;
+    min-height: calc(100vh - 90px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    padding: 40px 28px 60px;
+    border-right: 1px solid rgba(204,34,51,0.18);
+    position: sticky; top: 57px;
+    height: calc(100vh - 57px);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .sidebar::-webkit-scrollbar { display: none; }
+
+  /* ── MAIN CONTENT ── */
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 40px 40px 100px;
+  }
+
+  /* ════════════════════════════════
+     HERO / PROFILE (sidebar on desktop, top on mobile)
+  ════════════════════════════════ */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes floatAvatar { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @keyframes spinRing { to{transform:rotate(360deg)} }
+
+  .profile { text-align: center; animation: fadeUp 0.8s ease both; }
+
+  .avatar-frame {
+    width: 110px; height: 110px; border-radius: 50%; margin: 0 auto 20px;
+    position: relative; animation: floatAvatar 4s ease-in-out infinite;
+  }
+  .avatar-ring-outer {
+    position: absolute; inset: -4px; border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--rose), var(--gold), var(--lavender), var(--rose));
+    animation: spinRing 8s linear infinite;
+  }
+  .avatar-ring-inner { position: absolute; inset: 3px; border-radius: 50%; background: var(--cream-2); }
+  .avatar-emoji {
+    position: absolute; inset: 6px; border-radius: 50%;
+    background: linear-gradient(135deg, #e20b0b, #c52c2c);
+    display: flex; align-items: center; justify-content: center; font-size: 42px;
+    box-shadow: inset 0 2px 8px rgba(200,71,107,0.15);
+  }
+.avatar-img {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatar-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+  .profile-eyebrow {
+    font-family: 'Space Mono', monospace; font-size: 8px; letter-spacing: 3px;
+    color: var(--rose); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .profile-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px; font-weight: 300; letter-spacing: 1px; line-height: 1;
+    color: var(--ink); margin-bottom: 6px;
+  }
+  .profile-name em { font-style: italic; color: var(--rose); }
+  .profile-tagline { font-size: 12px; color: var(--ink-3); margin-bottom: 20px; line-height: 1.5; }
+  .profile-tagline .dot { color: var(--rose); margin: 0 5px; }
+
+  .profile-stats {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px;
+  }
+  .stat-card {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border-strong);
+    border-radius: 12px; padding: 12px 8px; text-align: center;
+    backdrop-filter: blur(8px);
+  }
+  .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--ink); line-height: 1; margin-bottom: 2px; }
+  .stat-label { font-size: 10px; color: var(--ink-3); }
+
+  .socials { display: flex; gap: 8px; justify-content: center; margin-bottom: 20px; }
+  .social-btn {
+    height: 34px; padding: 0 12px; border-radius: 100px;
+    background: rgba(255,255,255,0.06); border: 1px solid var(--border-strong);
+    display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 500; color: var(--ink);
+    text-decoration: none; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .social-btn:hover { transform: scale(1.05); border-color: var(--rose); box-shadow: 0 4px 12px var(--rose-glow); }
+
+  .trust-col { display: flex; flex-direction: column; gap: 8px; }
+  .trust-badge {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    font-size: 12px; color: var(--ink-3); font-weight: 500;
+  }
+  .trust-badge .t-icon { font-size: 15px; }
+
+  .sidebar-divider { height: 1px; background: var(--border-strong); margin: 20px 0; }
+
+  .sidebar-contact {
+    text-align: center; font-size: 12px; color: var(--ink-3);
+  }
+  .sidebar-contact a { color: var(--rose); text-decoration: none; font-weight: 500; }
+
+  /* ════════════════════════════════
+     SECTION HEADERS
+  ════════════════════════════════ */
+  .section-header { margin-bottom: 24px; animation: fadeUp 0.7s 0.2s ease both; }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300;
+    color: var(--ink); margin-bottom: 4px;
+  }
+  .section-title em { font-style: italic; color: var(--rose); }
+  .section-sub { font-size: 13px; color: var(--ink-3); }
+
+  .section-divider {
+    display: flex; align-items: center; gap: 16px; margin: 36px 0 28px;
+  }
+  .divider-line { flex: 1; height: 1px; background: rgba(204,34,51,0.25); }
+  .divider-label {
+    font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 3px;
+    color: var(--ink-3); text-transform: uppercase; white-space: nowrap;
+  }
+
+  /* ════════════════════════════════
+     PRODUCT GRID
+  ════════════════════════════════ */
+  .products { display: grid; grid-template-columns: 1fr; gap: 16px; }
+
+  .product-card {
+    border-radius: 20px; background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-strong);
+    overflow: hidden; transition: border-color 0.25s, transform 0.2s, box-shadow 0.25s;
+    animation: fadeUp 0.6s ease both;
+    backdrop-filter: blur(12px);
+    display: flex; flex-direction: column;
+  }
+  .product-card:nth-child(1){animation-delay:0.1s}
+  .product-card:nth-child(2){animation-delay:0.18s}
+  .product-card:hover { border-color: var(--rose); transform: translateY(-3px); box-shadow: 0 12px 36px var(--rose-glow); }
+
+  .product-header {
+    display: flex; align-items: center; gap: 12px; padding: 16px 18px;
+    cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .product-icon {
+    width: 46px; height: 46px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 22px;
+    border: 1px solid var(--border); background: var(--cream-2); position: relative; overflow: hidden;
+  }
+  .product-icon::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.5) 0%,transparent 60%); }
+  .product-title-wrap { flex: 1; min-width: 0; }
+  .product-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .product-subtitle-mini { font-size: 11px; color: var(--ink-3); }
+  .product-price-mini { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; color: var(--rose); flex-shrink: 0; }
+  .chevron {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--cream-2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.35s cubic-bezier(.4,0,.2,1), background 0.2s; flex-shrink: 0;
+  }
+  .chevron svg { width: 11px; height: 11px; fill: none; stroke: var(--ink-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .product-card.open .chevron { transform: rotate(180deg); background: var(--rose); border-color: var(--rose); }
+  .product-card.open .chevron svg { stroke: #fff; }
+
+  .product-body { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(.4,0,.2,1); }
+  .product-card.open .product-body { max-height: 1200px; }
+  .product-inner { padding: 0 16px 20px; }
+
+  .product-banner {
+    width: 100%; height: 170px; border-radius: 12px; margin-bottom: 16px;
+    border: 1px solid var(--border); overflow: hidden; position: relative;
+    display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 6px;
+  }
+  .banner-am    { background: linear-gradient(135deg,#1a0a2e 0%,#2d1a4a 40%,#4a1535 100%); }
+  .banner-shake { background: linear-gradient(135deg,#0a2010 0%,#1a3a10 50%,#0a2820 100%); }
+  .banner-aura  { background: linear-gradient(135deg,#2a0a1a 0%,#4d1535 50%,#1a0a2e 100%); }
+  .banner-journal { background: linear-gradient(135deg,#1a1200 0%,#3d2c00 50%,#1a1800 100%); }
+  .banner-shine { position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.08) 0%,transparent 50%,rgba(0,0,0,0.1) 100%); }
+  .banner-emoji { font-size: 50px; line-height: 1; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
+  .banner-text  { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; letter-spacing: 2px; color: rgba(255,255,255,0.85); }
+  .banner-img-overlay {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    border-radius: 12px;
+    display: none;
+  }
+  .banner-img-overlay.has-image { display: block; }
+  .banner-default-content {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    position: relative; z-index: 2;
+  }
+  .banner-upload-hint {
+    position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9); font-size: 11px; font-weight: 500;
+    padding: 5px 14px; border-radius: 100px; white-space: nowrap;
+    pointer-events: none; z-index: 3;
+    transition: opacity 0.2s;
+  }
+  .product-banner:hover .banner-upload-hint { opacity: 1; }
+  .product-banner { cursor: pointer; }
+  .banner-remove-btn {
+    position: absolute; top: 10px; right: 10px; z-index: 5;
+    background: rgba(139,0,0,0.8); border: 1px solid rgba(204,34,51,0.5);
+    color: #fff; font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 100px; cursor: pointer;
+    display: none;
+  }
+  .banner-img-overlay.has-image ~ .banner-remove-btn { display: block; }
+    background: rgba(0,0,0,0.45); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.18); border-radius: 7px;
+    font-family: 'Space Mono', monospace; font-size: 8px; letter-spacing: 1.5px;
+    color: #FFD700; padding: 4px 9px; text-transform: uppercase;
+  }
+
+  .product-name { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.3px; margin-bottom: 10px; color: var(--ink); line-height: 1.1; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+  .tag {
+    font-family: 'Space Mono', monospace; font-size: 8px; letter-spacing: 1px;
+    padding: 3px 9px; border-radius: 100px;
+    background: rgba(200,71,107,0.08); border: 1px solid rgba(200,71,107,0.2); color: var(--rose-dark);
+  }
+
+  .info-grid { border: 1px solid var(--border-strong); border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
+  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 14px; font-size: 12px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.03); }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .k { color: var(--ink-3); }
+  .info-row .v { font-weight: 600; color: var(--ink); }
+  .info-row .v.ac { color: var(--sage); }
+  .info-row .v.gold { color: var(--gold); }
+
+  .what-you-get {
+    background: linear-gradient(135deg, rgba(232,83,122,0.07), rgba(212,168,66,0.05));
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+  }
+  .wyg-title { font-size: 10px; font-weight: 600; color: var(--ink-3); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; font-family: 'Space Mono', monospace; }
+  .wyg-item { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; color: var(--ink-2); margin-bottom: 6px; line-height: 1.4; }
+  .wyg-item:last-child { margin-bottom: 0; }
+  .wyg-dot { width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, var(--rose), var(--rose-dark)); display: flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; flex-shrink: 0; margin-top: 1px; }
+
+  .pricing-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
+  .price-now { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 600; color: var(--ink); }
+  .price-was { font-size: 13px; color: var(--ink-3); text-decoration: line-through; font-family: 'Space Mono', monospace; }
+  .price-badge {
+    margin-left: auto; background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+    color: #fff; font-family: 'Space Mono', monospace; font-size: 8px; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 100px; box-shadow: 0 2px 8px var(--rose-glow);
+  }
+
+  .btn-cta {
+    width: 100%; padding: 13px 0; border-radius: 12px; border: none;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    color: #fff; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: transform 0.15s, box-shadow 0.2s; box-shadow: 0 4px 18px rgba(37,211,102,0.35);
+    position: relative; overflow: hidden;
+  }
+  .btn-cta::before { content:''; position:absolute; top:0; left:-100%; width:100%; height:100%; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent); transition:left 0.5s; }
+  .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.5); }
+  .btn-cta:hover::before { left: 100%; }
+
+  /* ════════════════════════════════
+     TESTIMONIALS
+  ════════════════════════════════ */
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .testimonial-card {
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border-strong);
+    border-radius: 16px; padding: 18px; backdrop-filter: blur(8px);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .testimonial-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--rose-glow); }
+  .t-stars { color: var(--gold); font-size: 12px; margin-bottom: 10px; letter-spacing: 2px; }
+  .t-text { font-size: 13px; color: var(--ink-2); line-height: 1.65; margin-bottom: 12px; font-style: italic; }
+  .t-author { display: flex; align-items: center; gap: 10px; }
+  .t-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--rose-light), var(--gold-light)); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .t-name { font-size: 12px; font-weight: 600; color: var(--ink); }
+  .t-handle { font-size: 10px; color: var(--ink-3); }
+
+  /* ════════════════════════════════
+     FAQ
+  ════════════════════════════════ */
+  .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+  .faq-item { border-bottom: 1px solid var(--border); padding: 16px 0; cursor: pointer; }
+  .faq-q { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--ink); }
+  .faq-icon { font-size: 18px; color: var(--ink-3); transition: transform 0.3s; flex-shrink: 0; }
+  .faq-item.open .faq-icon { transform: rotate(45deg); color: var(--rose); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .faq-item.open .faq-a { max-height: 200px; }
+  .faq-a-inner { font-size: 13px; color: var(--ink-3); line-height: 1.7; padding-top: 10px; }
+
+  /* ════════════════════════════════
+     FOOTER
+  ════════════════════════════════ */
+  .site-footer {
+    position: relative; z-index: 2;
+    border-top: 1px solid rgba(204,34,51,0.2);
+    background: rgba(10,4,6,0.92); backdrop-filter: blur(12px);
+    padding: 40px 40px 28px;
+  }
+  .footer-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    flex-wrap: wrap;
+  }
+  .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; color: var(--ink); }
+  .footer-brand em { color: var(--rose); font-style: italic; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { font-size: 12px; color: var(--ink-3); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--rose); }
+  .footer-copy { font-size: 12px; color: var(--ink-3); }
+  .footer-copy a { color: var(--rose); text-decoration: none; }
+
+  /* ════════════════════════════════
+     FLOAT CONTACT (WhatsApp)
+  ════════════════════════════════ */
+  .float-contact {
+    position: fixed; bottom: 28px; right: 28px; z-index: 50;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: #25D366;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+    transition: transform 0.2s, box-shadow 0.2s; text-decoration: none;
+    animation: waPulse 2.5s ease-in-out infinite;
+  }
+  .float-contact:hover { transform: scale(1.12); box-shadow: 0 8px 32px rgba(37,211,102,0.6); }
+  @keyframes waPulse {
+    0%,100% { box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 0 0 0 rgba(37,211,102,0.3); }
+    50% { box-shadow: 0 4px 20px rgba(37,211,102,0.45), 0 0 0 10px rgba(37,211,102,0); }
+  }
+
+  /* ════════════════════════════════
+     CONTACT SECTION
+  ════════════════════════════════ */
+  .contact-section {
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, rgba(139,0,0,0.12), rgba(80,0,10,0.08));
+    border: 1px solid rgba(204,34,51,0.25);
+    border-radius: 24px;
+    padding: 36px 40px;
+  }
+  .contact-intro { margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .contact-title {
+    font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 300;
+    color: var(--ink); margin-bottom: 6px;
+  }
+  .contact-title em { font-style: italic; color: var(--rose); }
+  .contact-sub { font-size: 13px; color: var(--ink-3); }
+  .contact-badge {
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(204,34,51,0.12); border: 1px solid rgba(204,34,51,0.3);
+    border-radius: 100px; padding: 7px 16px;
+    font-size: 12px; font-weight: 600; color: #FF8080; white-space: nowrap;
+  }
+  .contact-badge::before { content: '●'; font-size: 8px; color: #CC2233; animation: pulse-dot 2s infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .contact-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  .contact-card {
+    display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+    padding: 24px 22px; border-radius: 18px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(204,34,51,0.2);
+    text-decoration: none; color: var(--ink);
+    backdrop-filter: blur(10px);
+    transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+    position: relative; overflow: hidden;
+  }
+  .contact-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    border-radius: 0 0 18px 18px; opacity: 0; transition: opacity 0.2s;
+  }
+  .contact-call::after  { background: linear-gradient(90deg, #CC2233, #8B0000); }
+  .contact-wa::after    { background: linear-gradient(90deg, #25D366, #128C7E); }
+  .contact-email::after { background: linear-gradient(90deg, var(--gold), #8B5500); }
+
+  .contact-card:hover { transform: translateY(-4px); }
+  .contact-card:hover::after { opacity: 1; }
+  .contact-call:hover  { border-color: #CC2233; box-shadow: 0 12px 40px rgba(139,0,0,0.4); }
+  .contact-wa:hover    { border-color: #25D366; box-shadow: 0 12px 36px rgba(37,211,102,0.2); }
+  .contact-email:hover { border-color: var(--gold); box-shadow: 0 12px 36px var(--gold-light); }
+
+  .contact-card-icon {
+    width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  }
+  .contact-call .contact-card-icon  { background: rgba(139,0,0,0.25); border-color: rgba(204,34,51,0.3); }
+  .contact-wa .contact-card-icon    { background: rgba(37,211,102,0.1); border-color: rgba(37,211,102,0.2); }
+  .contact-email .contact-card-icon { background: var(--gold-light); border-color: rgba(200,137,42,0.2); }
+
+  .contact-card-content { flex: 1; min-width: 0; width: 100%; }
+  .contact-card-title { font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 3px; }
+  .contact-card-desc { font-size: 11px; color: var(--ink-3); margin-bottom: 8px; }
+  .contact-card-value { font-size: 13px; font-weight: 600; color: #FF7080; }
+  .contact-wa .contact-card-value   { color: #4DD888; }
+  .contact-email .contact-card-value { color: var(--gold); word-break: break-all; }
+
+  .contact-card-footer { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 4px; }
+  .contact-card-cta {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 100px;
+    background: rgba(139,0,0,0.2); border: 1px solid rgba(204,34,51,0.3); color: #FF8080;
+    transition: background 0.2s, color 0.2s;
+  }
+  .contact-wa    .contact-card-cta  { color: #4DD888; border-color: rgba(37,211,102,0.3); background: rgba(37,211,102,0.08); }
+  .contact-email .contact-card-cta  { color: var(--gold); border-color: rgba(200,137,42,0.3); background: var(--gold-light); }
+  .contact-card-arrow { font-size: 16px; color: var(--ink-3); transition: transform 0.2s; }
+  .contact-card:hover .contact-card-arrow { transform: translateX(5px); }
+
+  @media (max-width: 768px) {
+    .contact-section { padding: 24px 16px; border-radius: 18px; }
+    .contact-cards { grid-template-columns: 1fr; }
+    .contact-card { flex-direction: row; align-items: center; padding: 18px 16px; gap: 14px; }
+    .contact-card-footer { display: none; }
+    .float-contact { bottom: 20px; right: 16px; }
+  }
+
+  /* ════════════════════════════════
+     OVERLAY & CHECKOUT MODAL
+     (centered dialog on desktop)
+  ════════════════════════════════ */
+  .overlay {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(5,0,2,0.75); backdrop-filter: blur(12px);
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .overlay.active { display: flex; animation: overlayIn 0.25s ease both; }
+  @keyframes overlayIn { from{opacity:0} to{opacity:1} }
+
+  .checkout-sheet {
+    background: #130508; border-radius: 24px;
+    width: 100%; max-width: 540px;
+    border: 1px solid rgba(204,34,51,0.25);
+    box-shadow: 0 24px 80px rgba(139,0,0,0.4);
+    animation: modalIn 0.38s cubic-bezier(.4,0,.2,1) both;
+    position: relative; overflow: hidden;
+    max-height: 90vh; overflow-y: auto;
+  }
+  @keyframes modalIn { from{opacity:0;transform:scale(0.95) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+  .sheet-page { display: none; }
+  .sheet-page.active { display: block; }
+  #page-checkout { padding: 32px 28px 36px; }
+
+  .sheet-handle { display: none; }
+  .sheet-title { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; letter-spacing: 0.5px; margin-bottom: 4px; color: var(--ink); }
+  .sheet-sub { font-size: 13px; color: var(--ink-3); margin-bottom: 24px; }
+
+  .close-btn {
+    position: absolute; top: 20px; right: 20px; width: 32px; height: 32px;
+    border-radius: 50%; background: rgba(139,0,0,0.2); border: 1px solid rgba(204,34,51,0.3);
+    color: var(--ink-3); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; z-index: 5;
+    transition: background 0.2s, color 0.2s;
+  }
+  .close-btn:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
+
+  .field-label { font-size: 10px; letter-spacing: 1.5px; color: var(--ink-3); margin-bottom: 7px; font-family: 'Space Mono', monospace; text-transform: uppercase; }
+  .input-wrap {
+    background: rgba(255,255,255,0.05); border: 1.5px solid rgba(204,34,51,0.2);
+    border-radius: 12px; padding: 13px 16px;
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-wrap:focus-within { border-color: var(--rose); box-shadow: 0 0 0 3px var(--rose-light); }
+  .input-wrap.error { border-color: var(--rose) !important; }
+  .input-wrap input { background: none; border: none; outline: none; color: var(--ink); font-family: 'Outfit', sans-serif; font-size: 15px; flex: 1; }
+  .input-wrap input::placeholder { color: rgba(255,255,255,0.25); }
+  .input-wrap .ico { color: var(--ink-3); font-size: 15px; flex-shrink: 0; }
+  .field-error { font-size: 12px; color: var(--rose); margin-bottom: 12px; display: none; padding-left: 2px; }
+  .field-error.show { display: block; }
+
+  .order-summary { background: rgba(139,0,0,0.15); border: 1px solid rgba(204,34,51,0.25); border-radius: 14px; padding: 16px 18px; margin-bottom: 22px; }
+  .order-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 9px; }
+  .order-row:last-child { margin-bottom: 0; border-top: 1px solid var(--border-strong); padding-top: 11px; margin-top: 4px; }
+  .order-row .ok { color: var(--ink-3); }
+  .order-row .ov { font-weight: 600; color: var(--ink); }
+  .order-row .ov.strike { text-decoration: line-through; color: var(--ink-3); font-weight: 400; }
+  .order-row .ov.big { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--ink); }
+
+  /* PAYMENT PAGE */
+  .pay-header { background: linear-gradient(135deg, #3D35C8, #1A237E); padding: 20px 22px; }
+  .pay-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .pay-cancel { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.75); font-size: 14px; cursor: pointer; }
+  .pay-cancel-circle { width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .pay-powered { display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255,255,255,0.7); }
+  .pay-powered strong { color: #fff; font-size: 14px; }
+  .pay-timer-bar { background: rgba(255,255,255,0.15); border-radius: 6px; padding: 8px 14px; font-size: 13px; color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 14px; }
+  .pay-timer-bar .time { color: #ffb3c1; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 14px; }
+  .pay-merchant { display: flex; align-items: center; gap: 12px; }
+  .pay-logo { width: 44px; height: 44px; border-radius: 10px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .pay-merchant-name { color: #fff; font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .pay-merchant-id { color: rgba(255,255,255,0.55); font-size: 11px; font-family: 'Space Mono', monospace; }
+  .pay-lang { color: rgba(255,255,255,0.8); font-size: 12px; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 100px; cursor: pointer; }
+
+  .pay-tabs { display: flex; background: #fff; border-bottom: 1px solid #eee; overflow-x: auto; scrollbar-width: none; }
+  .pay-tabs::-webkit-scrollbar { display: none; }
+  .pay-tab { flex: 0 0 auto; padding: 13px 16px; font-size: 13px; color: #888; font-weight: 500; cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; transition: color 0.2s, border-color 0.2s; display: flex; align-items: center; gap: 6px; }
+  .pay-tab.active { color: #3D35C8; border-bottom-color: #3D35C8; font-weight: 600; }
+
+  .offer-section { padding: 14px 16px 10px; background: #f9f6f0; }
+  .offer-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .offer-title span { font-size: 13px; color: #555; font-weight: 500; }
+  .offer-title a { font-size: 12px; color: #3D35C8; text-decoration: none; font-weight: 600; }
+  .offer-card { border: 1.5px solid #FFD600; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; background: #fff; }
+  .offer-icon { width: 32px; height: 32px; background: #3D35C8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; flex-shrink: 0; }
+  .offer-text { flex: 1; font-size: 13px; color: #333; }
+  .offer-apply { color: #3D35C8; font-weight: 600; font-size: 13px; cursor: pointer; }
+  .offer-dots { display: flex; gap: 5px; justify-content: center; padding: 8px 0 12px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #3D35C8; }
+  .dot.dim { background: #ccc; }
+
+  .pay-methods { background: #fff; }
+  .pay-methods-title { padding: 14px 16px 8px; font-size: 13px; color: #888; font-weight: 500; }
+  .pay-method { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer; transition: background 0.15s; }
+  .pay-method:last-child { border-bottom: none; }
+  .pay-method:hover { background: #fafafa; }
+  .pay-method-icon { width: 42px; height: 42px; border-radius: 10px; background: #f4f4f4; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .pay-method-info { flex: 1; }
+  .pay-method-name { font-size: 15px; color: #222; font-weight: 500; margin-bottom: 2px; }
+  .pay-method-offer { font-size: 11px; color: #3D35C8; font-weight: 600; }
+  .pay-logo-chip { background: #f4f4f4; border: 1px solid #e8e8e8; border-radius: 5px; padding: 2px 7px; font-size: 10px; color: #555; font-family: 'Space Mono', monospace; font-weight: 700; }
+  .pay-chevron { color: #bbb; font-size: 16px; }
+
+  .upi-radio-wrap { border: 2px solid #3D35C8; border-radius: 12px; margin: 0 16px 8px; padding: 14px 16px; background: #fff; }
+  .upi-radio-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .radio-circle { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #3D35C8; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .radio-inner { width: 10px; height: 10px; border-radius: 50%; background: #3D35C8; }
+  .upi-radio-label { font-size: 15px; color: #222; font-weight: 500; }
+  .upi-apps-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; margin-bottom: 4px; }
+  .upi-app { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 4px; border-radius: 8px; transition: background 0.15s; }
+  .upi-app:hover { background: #f4f4f4; }
+  .upi-app-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: #f4f4f4; }
+  .upi-app-name { font-size: 10px; color: #555; text-align: center; line-height: 1.2; }
+  .upi-apps-row2 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-top: 8px; }
+
+  .qr-option { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: #fff; border-top: 1px solid #f0f0f0; cursor: pointer; }
+  .qr-label { flex: 1; font-size: 15px; color: #222; font-weight: 500; }
+  .qr-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #ccc; background: #fff; }
+
+  .upi-note { background: #fff9e6; border-left: 3px solid #ffc107; padding: 10px 14px; margin: 0 16px 8px; font-size: 12px; color: #555; border-radius: 0 6px 6px 0; }
+
+  .card-form { padding: 16px; background: #fff; }
+  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .card-input-wrap { background: #f9f9f9; border: 1.5px solid #e5e5e5; border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; transition: border-color 0.2s; }
+  .card-input-wrap:focus-within { border-color: #3D35C8; }
+  .card-input-wrap.full { grid-column: 1/-1; }
+  .card-ico { font-size: 18px; flex-shrink: 0; }
+  .card-input-wrap input { background: none; border: none; outline: none; color: #222; font-family: 'Outfit', sans-serif; font-size: 14px; flex: 1; width: 100%; }
+  .card-input-wrap input::placeholder { color: #bbb; }
+  .card-note { font-size: 12px; color: #888; display: flex; align-items: center; gap: 6px; }
+
+  .nb-search { padding: 12px 16px; background: #fff; border-bottom: 1px solid #eee; }
+  .nb-search input { width: 100%; border: 1.5px solid #e5e5e5; border-radius: 8px; padding: 10px 14px; font-size: 14px; color: #333; background: #f9f9f9; outline: none; }
+  .nb-search input:focus { border-color: #3D35C8; }
+  .nb-section-title { padding: 12px 16px 6px; font-size: 12px; color: #888; font-weight: 600; background: #f9f6f0; text-transform: uppercase; letter-spacing: 0.5px; }
+  .nb-bank { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-bottom: 1px solid #f0f0f0; background: #fff; cursor: pointer; transition: background 0.15s; }
+  .nb-bank:hover { background: #fafafa; }
+  .nb-bank-logo { width: 34px; height: 34px; border-radius: 8px; background: #f4f4f4; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .nb-bank-name { flex: 1; font-size: 14px; color: #333; }
+  .nb-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #ccc; background: #fff; flex-shrink: 0; }
+
+  .wallet-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; background: #fff; cursor: pointer; transition: background 0.15s; }
+  .wallet-item:hover { background: #fafafa; }
+  .wallet-icon { width: 40px; height: 40px; border-radius: 10px; background: #f4f4f4; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .wallet-name { flex: 1; font-size: 15px; color: #222; font-weight: 500; }
+  .wallet-offer { font-size: 11px; color: #3D35C8; font-weight: 600; padding: 2px 8px; background: #e8e6ff; border-radius: 100px; }
+  .wallet-radio { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #ccc; background: #fff; flex-shrink: 0; }
+
+  .emi-placeholder { padding: 48px 24px; text-align: center; background: #fff; }
+  .emi-icon { font-size: 48px; margin-bottom: 14px; }
+  .emi-placeholder p { color: #888; font-size: 14px; }
+
+  .pay-footer { padding: 12px 20px; background: #fff; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #999; }
+  .pay-footer a { color: #3D35C8; text-decoration: none; }
+  .pci-badge { background: #f0f0f0; border-radius: 6px; padding: 4px 8px; font-size: 9px; text-align: center; color: #666; font-weight: 700; letter-spacing: 0.5px; }
+
+  .pay-sticky-btn { padding: 14px 20px; background: #fff; border-top: 1px solid #eee; }
+  .pay-btn-main { width: 100%; padding: 15px; border-radius: 12px; border: none; background: linear-gradient(135deg,#3D35C8,#1A237E); color: #fff; font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.15s, box-shadow 0.2s; box-shadow: 0 4px 20px rgba(61,53,200,0.35); }
+  .pay-btn-main:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(61,53,200,0.45); }
+  .shield { font-size: 18px; }
+
+  .pay-body { background: #f9f6f0; }
+  .checkout-sheet::-webkit-scrollbar { width: 4px; }
+  .checkout-sheet::-webkit-scrollbar-thumb { background: rgba(26,23,20,0.1); border-radius: 2px; }
+
+  /* ════════════════════════════════
+     MOBILE — collapses to single column
+  ════════════════════════════════ */
+  @media (max-width: 768px) {
+    .top-nav { padding: 12px 16px; }
+    .nav-links { display: none; }
+    .top-logo { font-size: 18px; }
+
+    .page-layout { flex-direction: column; }
+
+    .sidebar {
+      width: 100%; position: static; height: auto;
+      border-right: none; border-bottom: 1px solid rgba(204,34,51,0.2);
+      padding: 28px 20px 24px;
+    }
+
+    .profile { text-align: center; }
+    .profile-stats { grid-template-columns: repeat(4,1fr); gap: 6px; }
+    .stat-card { padding: 10px 4px; }
+    .stat-num { font-size: 18px; }
+    .trust-col { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+    .trust-badge { flex: 0 0 auto; font-size: 11px; padding: 7px 10px; }
+    .sidebar-contact { display: none; }
+    .sidebar-divider { display: none; }
+
+    .main-content { padding: 24px 14px 80px; }
+
+    .section-title { font-size: 26px; }
+    .products { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .faq-grid { grid-template-columns: 1fr; }
+
+    /* Mobile overlay: slides up from bottom */
+    .overlay { padding: 0; align-items: flex-end; }
+    .checkout-sheet {
+      border-radius: 24px 24px 0 0;
+      max-width: 100%;
+      max-height: 92vh;
+      box-shadow: 0 -8px 40px rgba(26,23,20,0.2);
+    }
+    @keyframes modalIn { from{opacity:0;transform:translateY(100%)} to{opacity:1;transform:translateY(0)} }
+    .sheet-handle { display: block; width: 44px; height: 4px; background: rgba(26,23,20,0.12); border-radius: 2px; margin: 16px auto 16px; }
+    #page-checkout { padding: 8px 20px 32px; }
+
+    .site-footer { padding: 28px 20px; }
+    .footer-inner { flex-direction: column; text-align: center; gap: 14px; }
+    .footer-links { flex-wrap: wrap; justify-content: center; gap: 14px; }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .sidebar { width: 260px; padding: 32px 20px 60px; }
+    .main-content { padding: 32px 28px 80px; }
+    .products { grid-template-columns: 1fr 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr 1fr; }
+    .faq-grid { grid-template-columns: 1fr; }
+    .profile-name { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<a class="float-contact" href="https://wa.me/917045829681?text=Hi%20Catch%20Happy!%20I%20have%20a%20question." target="_blank" title="Chat on WhatsApp">
+  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="#fff">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeOverlay(event)">
+  <div class="checkout-sheet" id="checkoutSheet">
+    <button class="close-btn" onclick="closeSheet()">×</button>
+
+    <!-- PAGE 1 -->
+    <div class="sheet-page active" id="page-checkout">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">Checkout</div>
+      <p class="sheet-sub">Access will be sent to your email instantly ⚡</p>
+
+      <div class="field-label">Email Address</div>
+      <div class="input-wrap" id="emailWrap">
+        <span class="ico">📧</span>
+        <input type="email" id="emailInput" placeholder="you@example.com" />
+      </div>
+      <div class="field-error" id="emailError">This field is mandatory</div>
+
+      <div class="field-label">Phone Number</div>
+      <div class="input-wrap" id="phoneWrap">
+        <span class="ico" style="color:#aaa;font-size:13px">🇮🇳 +91 ▾</span>
+        <input type="tel" id="phoneInput" placeholder="Phone number *" maxlength="10" />
+      </div>
+      <div class="field-error" id="phoneError">This field is mandatory</div>
+
+      <div class="order-summary">
+        <div class="order-row"><span class="ok">Product</span><span class="ov" id="oName">—</span></div>
+        <div class="order-row"><span class="ok">Sub Total</span><span class="ov"><span id="oTotal2">—</span> &nbsp;<span class="ov strike" id="oWas">—</span></span></div>
+        <div class="order-row"><span class="ok">Total</span><span class="ov big" id="oTotal">—</span></div>
+      </div>
+
+      <button class="btn-cta" onclick="proceedToPayment()">Proceed to Pay &nbsp;→</button>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="sheet-page" id="page-payment">
+      <div class="pay-header">
+        <div class="pay-header-top">
+          <div class="pay-cancel" onclick="goBackToCheckout()">
+            <div class="pay-cancel-circle">✕</div>
+            <span>Cancel</span>
+          </div>
+          <div class="pay-powered"><span>Powered By</span><strong>⚡ Easebuzz</strong></div>
+        </div>
+        <div class="pay-timer-bar">
+          <span>Payment Link valid For</span>
+          <span class="time" id="timerDisplay">14:59</span>
+        </div>
+        <div class="pay-merchant">
+          <div class="pay-logo">🌸</div>
+          <div class="pay-merchant-info">
+            <div class="pay-merchant-name">catchhappyae@gmail.com</div>
+            <div class="pay-merchant-id">Tr ID &nbsp;<span id="trId">order_BmKkehEY</span></div>
+          </div>
+          <div class="pay-lang">English ▾</div>
+        </div>
+      </div>
+
+      <div class="pay-tabs">
+        <div class="pay-tab active" data-tab="upi" onclick="switchTab('upi')">📱 UPI</div>
+        <div class="pay-tab" data-tab="cards" onclick="switchTab('cards')">💳 Cards</div>
+        <div class="pay-tab" data-tab="netbanking" onclick="switchTab('netbanking')">🏦 Net Banking</div>
+        <div class="pay-tab" data-tab="wallets" onclick="switchTab('wallets')">👛 Wallets</div>
+        <div class="pay-tab" data-tab="emi" onclick="switchTab('emi')">📅 EMI</div>
+      </div>
+
+      <div class="pay-body">
+        <!-- UPI -->
+        <div id="tab-upi">
+          <div class="offer-section">
+            <div class="offer-title"><span>Offers</span><a href="#">View All ›</a></div>
+            <div class="offer-card"><div class="offer-icon">🏷️</div><span class="offer-text">Upto 5% cashback, max upto Rs.100</span><span class="offer-apply">Apply</span></div>
+            <div class="offer-dots"><div class="dot"></div><div class="dot dim"></div><div class="dot dim"></div></div>
+          </div>
+          <div class="pay-methods">
+            <div class="pay-methods-title">Pay via UPI</div>
+            <div class="upi-radio-wrap">
+              <div class="upi-radio-header"><div class="radio-circle"><div class="radio-inner"></div></div><span class="upi-radio-label">Pay by any UPI app</span></div>
+              <div class="upi-apps-grid">
+                <div class="upi-app"><div class="upi-app-icon" style="background:#000">🛡️</div><div class="upi-app-name">CRED UPI</div></div>
+                <div class="upi-app"><div class="upi-app-icon" style="background:#f1f3f4">🔵</div><div class="upi-app-name">Google Pay</div></div>
+                <div class="upi-app"><div class="upi-app-icon" style="background:#5f259f">💜</div><div class="upi-app-name">PhonePe</div></div>
+                <div class="upi-app"><div class="upi-app-icon" style="background:#002970">Ⓜ️</div><div class="upi-app-name">MobiKwik</div></div>
+                <div class="upi-app"><div class="upi-app-icon" style="background:#002970">💙</div><div class="upi-app-name">Paytm</div></div>
+              </div>
+              <div class="upi-apps-row2">
+                <div class="upi-app"><div class="upi-app-icon" style="background:#1565c0">💸</div><div class="upi-app-name">Super Money</div></div>
+                <div class="upi-app"><div class="upi-app-icon" style="background:#FF6600">🇮🇳</div><div class="upi-app-name">BHIM</div></div>
+                <div class="upi-app"><div class="upi-app-icon" style="background:#00a651">🟩</div><div class="upi-app-name">Kiwi</div></div>
+                <div class="upi-app"><div class="upi-app-icon">⊞</div><div class="upi-app-name">Other Apps</div></div>
+              </div>
+            </div>
+            <div class="qr-option">
+              <div style="background:#fff;border:1px solid #e0e0e0;padding:4px;border-radius:8px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;">
+                <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><rect x="2" y="2" width="12" height="12" rx="2" fill="#222"/><rect x="4" y="4" width="8" height="8" rx="1" fill="#fff"/><rect x="6" y="6" width="4" height="4" rx="0.5" fill="#222"/><rect x="20" y="2" width="12" height="12" rx="2" fill="#222"/><rect x="22" y="4" width="8" height="8" rx="1" fill="#fff"/><rect x="24" y="6" width="4" height="4" rx="0.5" fill="#222"/><rect x="2" y="20" width="12" height="12" rx="2" fill="#222"/><rect x="4" y="22" width="8" height="8" rx="1" fill="#fff"/><rect x="6" y="24" width="4" height="4" rx="0.5" fill="#222"/><rect x="16" y="2" width="2" height="2" rx="0.3" fill="#222"/><rect x="20" y="16" width="2" height="2" rx="0.3" fill="#222"/><rect x="16" y="16" width="2" height="2" rx="0.3" fill="#222"/></svg>
+              </div>
+              <span class="qr-label">Pay by QR</span>
+              <div class="qr-radio"></div>
+            </div>
+          </div>
+          <div class="upi-note"><strong>Note:</strong> Your daily UPI transaction limit across all UPI Apps is either 1,00,000 or as per your bank's limit.</div>
+          <div style="height:70px"></div>
+        </div>
+
+        <!-- CARDS -->
+        <div id="tab-cards" style="display:none">
+          <div class="offer-section">
+            <div class="offer-title"><span>Offers</span><a href="#">View All ›</a></div>
+            <div class="offer-card"><div class="offer-icon" style="background:#e53935">🏷️</div><span class="offer-text">Savings of up to 1.5% with NeuCard. T&amp;C Apply</span><span class="offer-apply">Apply</span></div>
+            <div class="offer-dots"><div class="dot"></div><div class="dot dim"></div><div class="dot dim"></div></div>
+          </div>
+          <div class="card-form">
+            <div style="font-size:15px;color:#222;font-weight:600;margin-bottom:14px">Enter Card Details</div>
+            <div class="card-grid">
+              <div class="card-input-wrap full"><span class="card-ico">💳</span><input type="text" placeholder="Card Number" maxlength="19" oninput="formatCard(this)" /></div>
+              <div class="card-input-wrap"><input type="text" placeholder="MM/YY" maxlength="5" /></div>
+              <div class="card-input-wrap"><input type="text" placeholder="CVV" maxlength="4" /></div>
+              <div class="card-input-wrap full"><input type="text" placeholder="Card Holder Name" /></div>
+            </div>
+            <div class="card-note">🔒 Your card details are encrypted and secure</div>
+          </div>
+          <div style="height:70px"></div>
+        </div>
+
+        <!-- NET BANKING -->
+        <div id="tab-netbanking" style="display:none">
+          <div class="offer-section">
+            <div class="offer-title"><span>Offers</span><a href="#">View All ›</a></div>
+            <div class="offer-card"><div class="offer-icon">🏷️</div><span class="offer-text">Upto 5% cashback, max upto Rs.100</span><span class="offer-apply">Apply</span></div>
+            <div class="offer-dots"><div class="dot"></div><div class="dot dim"></div><div class="dot dim"></div></div>
+          </div>
+          <div class="nb-search"><input type="text" placeholder="🔍  Search by Bank Name" id="bankSearch" oninput="filterBanks()" /></div>
+          <div class="nb-section-title">Popular Banks</div>
+          <div id="popularBanks">
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo">🔴</div><span class="nb-bank-name">Airtel Payments Bank</span><div class="nb-radio"></div></div>
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo">🔺</div><span class="nb-bank-name">Axis Bank</span><div class="nb-radio"></div></div>
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo">🔷</div><span class="nb-bank-name">Federal Bank</span><div class="nb-radio"></div></div>
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo">🔴</div><span class="nb-bank-name">ICICI Bank</span><div class="nb-radio"></div></div>
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo">🟠</div><span class="nb-bank-name">IDBI Bank</span><div class="nb-radio"></div></div>
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo">🔵</div><span class="nb-bank-name">State Bank of India</span><div class="nb-radio"></div></div>
+          </div>
+          <div class="nb-section-title" id="otherBanksTitle">Other Banks</div>
+          <div id="otherBanks">
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo" style="background:#fff;border:1px solid #eee;color:#00529b;font-weight:700;font-size:11px">YES</div><span class="nb-bank-name">Yes Bank Ltd</span><div class="nb-radio"></div></div>
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo" style="background:#6a1b9a;color:#fff;font-weight:700;font-size:11px">AU</div><span class="nb-bank-name">AU Small Finance Bank</span><div class="nb-radio"></div></div>
+            <div class="nb-bank" onclick="selectBank(this)"><div class="nb-bank-logo">🟡</div><span class="nb-bank-name">Punjab National Bank</span><div class="nb-radio"></div></div>
+          </div>
+          <div style="height:70px"></div>
+        </div>
+
+        <!-- WALLETS -->
+        <div id="tab-wallets" style="display:none">
+          <div class="offer-section">
+            <div class="offer-title"><span>Offers</span><a href="#">View All ›</a></div>
+            <div class="offer-card"><div class="offer-icon" style="background:#ff9800">🏷️</div><span class="offer-text">Flat ₹20 off on Paytm Wallet. T&amp;C Apply</span><span class="offer-apply">Apply</span></div>
+            <div class="offer-dots"><div class="dot"></div><div class="dot dim"></div><div class="dot dim"></div></div>
+          </div>
+          <div>
+            <div class="wallet-item" onclick="selectWallet(this)"><div class="wallet-icon" style="background:#ff9900">💛</div><div><div class="wallet-name">Amazon Pay Balance</div><div class="wallet-offer">1 Offer</div></div><div class="wallet-radio"></div></div>
+            <div class="wallet-item" onclick="selectWallet(this)"><div class="wallet-icon" style="background:#5f259f">💜</div><span class="wallet-name">PhonePe</span><div class="wallet-radio"></div></div>
+            <div class="wallet-item" onclick="selectWallet(this)"><div class="wallet-icon" style="background:#002970">💙</div><span class="wallet-name">Paytm Wallet</span><div class="wallet-radio"></div></div>
+            <div class="wallet-item" onclick="selectWallet(this)"><div class="wallet-icon">🟢</div><span class="wallet-name">Freecharge</span><div class="wallet-radio"></div></div>
+          </div>
+          <div style="height:70px"></div>
+        </div>
+
+        <!-- EMI -->
+        <div id="tab-emi" style="display:none">
+          <div class="emi-placeholder"><div class="emi-icon">📅</div><p>EMI options will be shown after entering your card details.</p></div>
+          <div style="height:70px"></div>
+        </div>
+      </div>
+
+      <div class="pay-footer">
+        <div>Secured by Easebuzz · <a href="#">T&amp;C</a> · <a href="#">Privacy</a></div>
+        <div class="pci-badge">PCI DSS<div>SECURED</div></div>
+      </div>
+      <div class="pay-sticky-btn">
+        <button class="pay-btn-main"><span class="shield">🛡️</span> Pay ₹<span id="payAmount">120.00</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     PAGE
+══════════════════════════════════ -->
+
+<!-- Announcement -->
+<div class="announcement">
+  🎉 <strong>Limited Time:</strong> All products 50% OFF today only · Use code <strong>PALAK50</strong>
+</div>
+
+<!-- Top Nav -->
+<nav class="top-nav">
+  <a class="top-logo" href="#">Catch<em>Happy</em></a>
+  <div class="nav-links">
+    <a class="nav-link" href="#section-products">Products</a>
+    <a class="nav-link" href="#section-reviews">Reviews</a>
+    <a class="nav-link" href="#section-faq">FAQ</a>
+    <a class="nav-link" href="#section-contact">Contact</a>
+  </div>
+  <a class="signin-btn" href="#">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Sign In
+  </a>
+</nav>
+
+<!-- Main Layout -->
+<div class="page-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="profile">
+      <div class="avatar-frame">
+        <div class="avatar-ring-outer"></div>
+        <div class="avatar-ring-inner"></div>
+       <div class="avatar-img">
+  <img src="https://i.ibb.co/B54zrpHF/Screenshot-2026-05-06-14-47-36-31-f9ee0578fe1cc94de7482bd41accb329.jpg" alt="Screenshot 2026 05 06 14 47 36 31 f9ee0578fe1cc94de7482bd41accb329" border="0">
+</div>
+      </div>
+      <div class="profile-eyebrow">Digital Creator & Wellness Coach</div>
+      <div class="profile-name">Op <em>Sam</em></div>
+      <div class="profile-tagline">
+        Creator<span class="dot">·</span>Catch Happy AE<span class="dot">·</span>Digital Store
+      </div>
+
+      <div class="profile-stats">
+        <div class="stat-card"><div class="stat-num">10K+</div><div class="stat-label">Students</div></div>
+        <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Products</div></div>
+        <div class="stat-card"><div class="stat-num">4.9★</div><div class="stat-label">Rating</div></div>
+        <div class="stat-card"><div class="stat-num">100%</div><div class="stat-label">Instant</div></div>
+      </div>
+
+      <div class="socials">
+        <a class="social-btn" href="https://www.instagram.com/opsamz01?igsh=cDE3MTA3MDRsZTJt">📸 Instagram</a>
+        <a class="social-btn" href="https://youtube.com/@opsamz?si=EFIkAaYvNpy0ijFJ">▶️ YouTube</a>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="trust-col">
+      <div class="trust-badge"><span class="t-icon">⚡</span> Instant Digital Delivery</div>
+      <div class="trust-badge"><span class="t-icon">🔒</span> 100% Secure Payment</div>
+      <div class="trust-badge"><span class="t-icon">✅</span> Verified Creator</div>
+      <div class="trust-badge"><span class="t-icon">♾️</span> Lifetime Access</div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-contact">
+      <div style="font-size:12px;color:var(--ink-3);margin-bottom:6px">Have questions?</div>
+      <a href="sudarshanjadhav592@gmail.com">catchhappyae@gmail.com</a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- Products -->
+    <div class="section-header" id="section-products">
+      <div class="section-title">Digital <em>Products</em></div>
+      <div class="section-sub">Instant access · Download immediately after purchase</div>
+    </div>
+
+    <div class="products">
+
+      <!-- Product 1 -->
+      <div class="product-card" id="card-1">
+        <div class="product-header" onclick="toggleCard('card-1')">
+          <div class="product-icon">🌅</div>
+          <div class="product-title-wrap">
+            <div class="product-title">CC</div>
+            <div class="product-subtitle-mini">PDF + Video · Instant</div>
+          </div>
+          <div class="product-price-mini">₹299</div>
+          <div class="chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="product-body">
+          <div class="product-inner">
+            <div class="product-banner banner-am" id="banner-1" style="background-image:url('data:image/jpeg;base64,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');background-size:cover;background-position:center;cursor:default;">
+              <div class="banner-shine"></div>
+              <div class="banner-chip">BESTSELLER</div>
+            </div>
+            <div class="product-name">CC</div>
+            <div class="tags"><span class="tag">SKINCARE</span><span class="tag">MORNING</span><span class="tag">PDF + VIDEO</span></div>
+            <div class="info-grid">
+              <div class="info-row"><span class="k">Format</span><span class="v">PDF + Video</span></div>
+              <div class="info-row"><span class="k">Access</span><span class="v ac">Instant ⚡</span></div>
+              <div class="info-row"><span class="k">Language</span><span class="v">English / Hindi</span></div>
+              <div class="info-row"><span class="k">Updates</span><span class="v gold">Lifetime Free</span></div>
+            </div>
+            <div class="what-you-get">
+              <div class="wyg-title">What You Get</div>
+              <div class="wyg-item"><div class="wyg-dot">✓</div>Step-by-step AM skincare routine for glowing skin</div>
+              <div class="wyg-item"><div class="wyg-dot">✓</div>Product picks for every skin type</div>
+              <div class="wyg-item"><div class="wyg-dot">✓</div>Morning mindset & wellness habits</div>
+            </div>
+            <div class="pricing-row">
+              <div class="price-now">₹158</div>
+              <div class="price-was">₹200</div>
+              <div class="price-badge">42% OFF</div>
+            </div>
+            <button class="btn-cta" onclick="orderOnWhatsApp('CC','₹299')">Order on WhatsApp 💬</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card" id="card-2">
+        <div class="product-header" onclick="toggleCard('card-2')">
+          <div class="product-icon">🥤</div>
+          <div class="product-title-wrap">
+            <div class="product-title">SHAKE</div>
+            <div class="product-subtitle-mini">PDF Recipe Book · 25+ Recipes</div>
+          </div>
+          <div class="product-price-mini">₹89</div>
+          <div class="chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="product-body">
+          <div class="product-inner">
+            <div class="product-banner banner-shake" id="banner-2" style="background-image:url('data:image/jpeg;base64,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');background-size:cover;background-position:center;cursor:default;">
+              <div class="banner-shine"></div>
+              <div class="banner-chip">NEW</div>
+            </div>
+            <div class="product-name">SHAKE </div>
+            <div class="tags"><span class="tag">NUTRITION</span><span class="tag">RECIPES</span><span class="tag">WELLNESS</span></div>
+            <div class="info-grid">
+              <div class="info-row"><span class="k">Format</span><span class="v">PDF Recipe Book</span></div>
+              <div class="info-row"><span class="k">Recipes</span><span class="v ac">25+ Recipes</span></div>
+              <div class="info-row"><span class="k">Access</span><span class="v ac">Instant ⚡</span></div>
+              <div class="info-row"><span class="k">Level</span><span class="v gold">Beginner Friendly</span></div>
+            </div>
+            <div class="what-you-get">
+              <div class="wyg-title">What You Get</div>
+              <div class="wyg-item"><div class="wyg-dot">✓</div>25+ shake & smoothie recipes</div>
+              <div class="wyg-item"><div class="wyg-dot">✓</div>Seasonal ingredient swap guide</div>
+              <div class="wyg-item"><div class="wyg-dot">✓</div>Nutrition breakdown per recipe</div>
+            </div>
+            <div class="pricing-row">
+              <div class="price-now">₹89</div>
+              <div class="price-was">₹100</div>
+              <div class="price-badge">21% OFF</div>
+            </div>
+            <button class="btn-cta" onclick="orderOnWhatsApp('Green Shake Recipe Pack','₹149')">Order on WhatsApp 💬</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Testimonials -->
+    <div class="section-divider" id="section-reviews">
+      <div class="divider-line"></div>
+      <div class="divider-label">Student Reviews</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <div class="t-text">"The AM Routine Masterclass completely transformed my mornings. My skin has never looked better — I get compliments every day now!"</div>
+        <div class="t-author"><div class="t-avatar">👩</div><div><div class="t-name">Priya Sharma</div><div class="t-handle">@priya.glowup</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <div class="t-text">"Worth every rupee. The green shake recipes are so easy and my energy levels have skyrocketed. Palak explains everything so clearly!"</div>
+        <div class="t-author"><div class="t-avatar">👩🏽</div><div><div class="t-name">Ananya Kapoor</div><div class="t-handle">@healthy.ananya</div></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="t-stars">★★★★★</div>
+        <div class="t-text">"The Aura Glow guide is like having a personal skincare consultant. My acne is clearing up and my skin looks so much more radiant."</div>
+        <div class="t-author"><div class="t-avatar">🧕</div><div><div class="t-name">Riya Verma</div><div class="t-handle">@riya.wellness</div></div></div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="section-divider" id="section-faq">
+      <div class="divider-line"></div>
+      <div class="divider-label">FAQ</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="faq-grid">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How do I receive my purchase? <span class="faq-icon">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">After successful payment, your product is delivered instantly to your email. Check your inbox (and spam folder) within minutes.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is this a one-time payment? <span class="faq-icon">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Yes! All products are one-time purchases. You get lifetime access with no subscriptions or hidden charges.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Can I get a refund? <span class="faq-icon">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Due to the digital nature of our products, we don't offer refunds. For any access issues, email catchhappyae@gmail.com and we'll help immediately.</div></div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Are these suitable for beginners? <span class="faq-icon">+</span></div>
+        <div class="faq-a"><div class="faq-a-inner">Absolutely! Everything is designed for beginners. Palak explains every step in simple, easy-to-follow language — no prior knowledge needed.</div></div>
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="section-divider" id="section-contact">
+      <div class="divider-line"></div>
+      <div class="divider-label">Contact Us</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="contact-section">
+      <div class="contact-intro">
+        <div>
+          <div class="contact-title">Get in <em>Touch</em></div>
+          <div class="contact-sub">We're here to help — reach out anytime via call, WhatsApp, or email.</div>
+        </div>
+        <div class="contact-badge">We're Online</div>
+      </div>
+      <div class="contact-cards">
+
+        <!-- Call Card -->
+        <a class="contact-card contact-call" href="tel:+919372361924">
+          <div class="contact-card-icon">📞</div>
+          <div class="contact-card-content">
+            <div class="contact-card-title">Call Us</div>
+            <div class="contact-card-desc">Tap to call directly</div>
+            <div class="contact-card-value">+91 93723 61924</div>
+          </div>
+          <div class="contact-card-footer">
+            <span class="contact-card-cta">Call Now</span>
+            <span class="contact-card-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- WhatsApp Card -->
+        <a class="contact-card contact-wa" href="https://wa.me/919372361924%20Catch%20Happy!%20I%20have%20a%20question." target="_blank">
+          <div class="contact-card-icon">💬</div>
+          <div class="contact-card-content">
+            <div class="contact-card-title">WhatsApp</div>
+            <div class="contact-card-desc">Chat with us instantly</div>
+            <div class="contact-card-value">Message on WhatsApp</div>
+          </div>
+          <div class="contact-card-footer">
+            <span class="contact-card-cta">Chat Now</span>
+            <span class="contact-card-arrow">→</span>
+          </div>
+        </a>
+
+        <!-- Email Card -->
+        <a class="contact-card contact-email" href="mailto:sudarshanjadhav592@gmail.com">
+          <div class="contact-card-icon">✉️</div>
+          <div class="contact-card-content">
+            <div class="contact-card-title">Email</div>
+            <div class="contact-card-desc">We reply within 24 hours</div>
+            <div class="contact-card-value">catchhappyae@gmail.com</div>
+          </div>
+          <div class="contact-card-footer">
+            <span class="contact-card-cta">Send Mail</span>
+            <span class="contact-card-arrow">→</span>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">Catch<em>Happy</em></div>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#section-contact">Contact</a>
+    </div>
+    <div class="footer-copy">© 2026 OPSAM · Powered by <a href="#">Catch</a></div>
+  </div>
+</footer>
+
+<script>
+  function triggerBannerUpload(bannerId, inputId) {
+    document.getElementById(inputId).click();
+  }
+
+  function setBannerImage(overlayId, defaultId, hintId, input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const overlay = document.getElementById(overlayId);
+      const def = document.getElementById(defaultId);
+      const hint = document.getElementById(hintId);
+      overlay.style.backgroundImage = 'url(' + e.target.result + ')';
+      overlay.classList.add('has-image');
+      def.style.display = 'none';
+      hint.textContent = '📷 Click to change image';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  function orderOnWhatsApp(name, price) {
+    var phone = '919372361924'; // Replace with your WhatsApp number (with country code, no +)
+    var msg = encodeURIComponent(
+      '🛒 *New Order Request*\n\n' +    
+      '📦 Product: ' + name + '\n' +
+      '💰 Price: ' + price + '\n\n' +
+      'Hi! I want to buy this product. Please share payment details. 🙏'
+    );
+    window.open('https://wa.me/' + phone + '?text=' + msg, '_blank');
+  }
+
+  function toggleCard(id) {
+    document.getElementById(id).classList.toggle('open');
+  }
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+  }
+
+  let timerInterval = null, timerSeconds = 14*60+59;
+
+  function openCheckout(name, price, was) {
+    document.getElementById('oName').textContent = name;
+    document.getElementById('oTotal2').textContent = price;
+    document.getElementById('oWas').textContent = was;
+    document.getElementById('oTotal').textContent = price;
+    document.getElementById('payAmount').textContent = parseFloat(price.replace('₹','')).toFixed(2);
+    showPage('page-checkout');
+    document.getElementById('overlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSheet() {
+    document.getElementById('overlay').classList.remove('active');
+    document.body.style.overflow = '';
+    stopTimer();
+  }
+  function closeOverlay(e) {
+    if (e.target === document.getElementById('overlay')) closeSheet();
+  }
+  function showPage(id) {
+    document.querySelectorAll('.sheet-page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+  function proceedToPayment() {
+    const email = document.getElementById('emailInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    let valid = true;
+    const emailWrap = document.getElementById('emailWrap'), emailErr = document.getElementById('emailError');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { emailWrap.classList.add('error'); emailErr.classList.add('show'); valid=false; }
+    else { emailWrap.classList.remove('error'); emailErr.classList.remove('show'); }
+    const phoneWrap = document.getElementById('phoneWrap'), phoneErr = document.getElementById('phoneError');
+    if (!phone || phone.length < 10) { phoneWrap.classList.add('error'); phoneErr.classList.add('show'); valid=false; }
+    else { phoneWrap.classList.remove('error'); phoneErr.classList.remove('show'); }
+    if (!valid) return;
+    const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let trId='order_'; for(let i=0;i<8;i++) trId+=chars[Math.floor(Math.random()*chars.length)];
+    document.getElementById('trId').textContent = trId;
+    showPage('page-payment'); switchTab('upi'); startTimer();
+    document.getElementById('checkoutSheet').scrollTop = 0;
+  }
+  function goBackToCheckout() { stopTimer(); showPage('page-checkout'); }
+  function startTimer() {
+    stopTimer(); timerSeconds=14*60+59; updateTimerDisplay();
+    timerInterval=setInterval(()=>{ timerSeconds--; if(timerSeconds<0){timerSeconds=0;stopTimer();} updateTimerDisplay(); },1000);
+  }
+  function stopTimer() { if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
+  function updateTimerDisplay() {
+    const m=Math.floor(timerSeconds/60).toString().padStart(2,'0');
+    const s=(timerSeconds%60).toString().padStart(2,'0');
+    document.getElementById('timerDisplay').textContent=m+':'+s;
+  }
+  function switchTab(tabName) {
+    document.querySelectorAll('.pay-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tabName));
+    ['upi','cards','netbanking','wallets','emi'].forEach(n=>{ document.getElementById('tab-'+n).style.display=n===tabName?'block':'none'; });
+  }
+  function filterBanks() {
+    const q=document.getElementById('bankSearch').value.toLowerCase();
+    document.querySelectorAll('#popularBanks .nb-bank,#otherBanks .nb-bank').forEach(b=>{
+      b.style.display=b.querySelector('.nb-bank-name').textContent.toLowerCase().includes(q)?'flex':'none';
+    });
+    document.getElementById('otherBanksTitle').style.display=q?'none':'block';
+  }
+  function selectBank(el) {
+    document.querySelectorAll('.nb-bank').forEach(b=>{ b.querySelector('.nb-radio').style.border='2px solid #ccc'; b.querySelector('.nb-radio').style.background='#fff'; });
+    el.querySelector('.nb-radio').style.border='2px solid #3D35C8'; el.querySelector('.nb-radio').style.background='#3D35C8';
+  }
+  function selectWallet(el) {
+    document.querySelectorAll('.wallet-radio').forEach(r=>{ r.style.border='2px solid #ccc'; r.style.background='#fff'; });
+    el.querySelector('.wallet-radio').style.border='2px solid #3D35C8'; el.querySelector('.wallet-radio').style.background='#3D35C8';
+  }
+  function formatCard(input) {
+    let v=input.value.replace(/\D/g,'').substring(0,16);
+    input.value=v.replace(/(.{4})/g,'$1 ').trim();
+  }
+</script>
+</body>
+</html>
